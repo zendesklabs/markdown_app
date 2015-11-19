@@ -19,3 +19,6 @@ span.filename {
 i.icon-comment, i.icon-file {
   margin-right: 10px;
 }
+i.icon-minus {
+  cursor: pointer;
+}

@@ -3,6 +3,8 @@
     defaultState: 'loading',
     events: {
       'app.created':'created',
+      'app.willDestroy':'willDestroy',
+
       'comment.attachments.changed':'reload',
       // click events
       'click .hide_icon':'toggleHide',
@@ -91,7 +93,7 @@
       }
     },
     reload: function(e) {
-      var interval = setInterval(function() {
+      this.interval = setInterval(function() {
         var attachments = this.comment().attachments();
         // if they all have URLs clearTimeout and call this.load()
         var urls = _.map(attachments, function(attachment) {
@@ -107,7 +109,7 @@
         var allLoaded = !_.contains(urls, false);
         var oneLoaded = _.contains(urls, true);
         if(allLoaded) { // all attachments loaded, or none with none in progress
-          clearInterval(interval);
+          clearInterval(this.interval);
           this.load(false);
         } else if (oneLoaded) { // at least one attachment loaded
           this.load(true);
@@ -245,6 +247,11 @@
       this.$('section').show();
       this.$('i.toggle_hide').addClass('icon-minus hide_icon');
       this.$('i.toggle_hide').removeClass('icon-plus show_icon');
+    },
+
+    // clear it out
+    willDestroy: function() {
+      clearInterval(this.interval);
     }
   };
 }());
